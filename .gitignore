@@ -1,0 +1,72 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+.env.local
+*.env.local
+
+# Node / frontend
+node_modules/
+dist/
+build/
+.vite/
+*.local
+.next/
+
+# Logs
+*.log
+backend.log
+server.log
+
+# Cached structures (regenerable via the puzzle queue)
+backend/cache/
+backend/structures_cache/
+backend/data/cache.db
+
+# IDE
+.vscode/launch.json.bak-*
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# =====================================================================
+# Internal documentation — never commit to public repos.
+# =====================================================================
+HANDOFF.md
+CLAUDE.md
+PLAN.md
+.claude/
+*.session.json
+claude.session.json
+
+# Ad-hoc personal notes
+notes/
+scratch/
+private/
+*.private.md
+*.scratch.md
+*.notes.md
+
+# Working drafts of public docs (promoted manually when publishing)
+README_PUBLIC.md
+PUBLISH.md

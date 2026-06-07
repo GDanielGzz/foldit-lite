@@ -1,0 +1,71 @@
+/* ---------- Design tokens (lifted from redesign/FolditLite.html) ---------- */
+:root {
+  color-scheme: dark;
+
+  --bg:        oklch(0.165 0.013 240);
+  --bg-2:      oklch(0.195 0.014 240);
+  --surface:   oklch(0.215 0.014 240);
+  --surface-2: oklch(0.255 0.015 240);
+  --border:    oklch(0.305 0.014 240);
+  --border-2:  oklch(0.36 0.016 240);
+  --text:      oklch(0.965 0.005 80);
+  --text-dim:  oklch(0.78 0.008 240);
+  --muted:     oklch(0.62 0.012 240);
+  --muted-2:   oklch(0.5 0.013 240);
+
+  --accent:    oklch(0.82 0.14 168);
+  --accent-2:  oklch(0.7 0.13 168);
+  --accent-bg: oklch(0.32 0.06 168 / 0.18);
+
+  --good:      oklch(0.83 0.16 150);
+  --warn:      oklch(0.82 0.14 78);
+  --danger:    oklch(0.74 0.16 24);
+  --info:      oklch(0.78 0.12 235);
+  --violet:    oklch(0.75 0.16 305);
+
+  --radius-sm: 4px;
+  --radius:    8px;
+  --radius-lg: 14px;
+
+  --shadow-1: 0 1px 0 0 oklch(1 0 0 / 0.03) inset, 0 1px 2px oklch(0 0 0 / 0.35);
+  --shadow-2: 0 1px 0 0 oklch(1 0 0 / 0.04) inset, 0 8px 24px -8px oklch(0 0 0 / 0.5);
+  --shadow-pop: 0 16px 40px -8px oklch(0 0 0 / 0.65), 0 1px 0 0 oklch(1 0 0 / 0.05) inset;
+
+  --font-sans:  "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "IBM Plex Serif", ui-serif, Georgia, serif;
+  --font-mono:  "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+
+/* Paper (light) theme — toggled by .paper class on <html>. */
+:root.paper {
+  color-scheme: light;
+  --bg:        oklch(0.965 0.008 85);
+  --bg-2:      oklch(0.94 0.008 85);
+  --surface:   oklch(0.985 0.005 85);
+  --surface-2: oklch(0.92 0.01 85);
+  --border:    oklch(0.85 0.012 85);
+  --border-2:  oklch(0.77 0.015 85);
+  --text:      oklch(0.21 0.015 240);
+  --text-dim:  oklch(0.35 0.012 240);
+  --muted:     oklch(0.5 0.012 240);
+  --muted-2:   oklch(0.6 0.013 240);
+  --accent:    oklch(0.55 0.13 168);
+  --accent-2:  oklch(0.45 0.13 168);
+  --accent-bg: oklch(0.55 0.1 168 / 0.12);
+  --shadow-1: 0 1px 2px oklch(0 0 0 / 0.06);
+  --shadow-2: 0 1px 2px oklch(0 0 0 / 0.04), 0 12px 24px -10px oklch(0 0 0 / 0.18);
+  --shadow-pop: 0 16px 40px -8px oklch(0 0 0 / 0.18), 0 1px 0 0 oklch(0 0 0 / 0.04);
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  letter-spacing: -0.005em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}

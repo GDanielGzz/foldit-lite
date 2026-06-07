@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Foldit-lite spike — 3Dmol viewer</title>
+  <style>
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; background: #111; color: #eee; }
+    #viewer { position: absolute; inset: 0; }
+    #panel {
+      position: absolute; top: 12px; left: 12px; z-index: 2;
+      background: rgba(20, 20, 20, 0.85); padding: 10px 14px; border-radius: 8px;
+      font-size: 13px; line-height: 1.5; max-width: 360px;
+    }
+    #panel h1 { margin: 0 0 4px; font-size: 14px; }
+    #status { color: #9cf; }
+    #status.err { color: #f99; }
+    code { background: #222; padding: 1px 4px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <div id="panel">
+    <h1>Foldit-lite spike</h1>
+    <div>Loaded: <code id="src">predicted.pdb</code></div>
+    <div id="status">Loading 3Dmol.js…</div>
+    <div id="meta"></div>
+  </div>
+  <div id="viewer"></div>
+
+  <script src="https://3dmol.org/build/3Dmol-min.js"></script>
+  <script>
+    const status = document.getElementById('status');
+    const meta = document.getElementById('meta');
+    const srcEl = document.getElementById('src');
+
+    const pdbFile = new URLSearchParams(location.search).get('pdb') || 'predicted.pdb';
+    srcEl.textContent = pdbFile;
+
+    function fail(msg) {
+      status.classList.add('err');
+      status.textContent = 'Error: ' + msg;
+    }
+
+    if (typeof $3Dmol === 'undefined') {
+      fail('3Dmol.js failed to load (check network / CDN).');
+    } else {
+      status.textContent = 'Fetching ' + pdbFile + '…';
+      fetch(pdbFile)
+        .then(r => {
+          if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + pdbFile);
+          return r.text();
+        })
+        .then(pdb => {
+          const viewer = $3Dmol.createViewer('viewer', { backgroundColor: '#111' });
+          viewer.addModel(pdb, 'pdb');
+          viewer.setStyle({}, { cartoon: { color: 'spectrum' } });
+          viewer.zoomTo();
+          viewer.render();
+
+          const atomCount = (pdb.match(/^ATOM/gm) || []).length;
+          const residueIds = new Set();
+          pdb.split('\n').forEach(line => {
+            if (line.startsWith('ATOM')) residueIds.add(line.slice(22, 27).trim());
+          });
+          status.textContent = 'Rendered.';
+          meta.innerHTML = `<div>${residueIds.size} residues, ${atomCount} atoms</div>
+                            <div style="margin-top:6px;color:#888">drag to rotate, scroll to zoom</div>`;
+        })
+        .catch(err => fail(err.message));
+    }
+  </script>
+</body>
+</html>

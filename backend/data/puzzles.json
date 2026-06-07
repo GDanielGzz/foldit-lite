@@ -1,0 +1,86 @@
+{
+  "puzzle1": {
+    "id": "puzzle1",
+    "title": "Rescue the Helix",
+    "description": "This 42-residue peptide should fold into a single continuous α-helix, but six helix-breaking residues (Pro and Gly) have been inserted at structurally bad positions. Mutate residues to restore the helix. Score = Cα RMSD to the target structure (lower is better).",
+    "starting_sequence": "AEAPAKAAEAGAKAAEAPAKAAEAGAKAAEAPAKAAEAGAKA",
+    "target_pdb_file": "puzzle1_helix.pdb",
+    "mutation_budget": 6,
+    "baseline_rmsd": 16.54,
+    "expected_solved_rmsd": 0.8,
+    "hint": "Helix-breaking residues are P and G. Helix-favoring are A, E, K, L, M.",
+    "difficulty": "easy"
+  },
+  "puzzle2": {
+    "id": "puzzle2",
+    "title": "Rebuild the Bundle",
+    "description": "HP35 (villin headpiece) is a classic 36-residue 3-helix bundle. Five mutations have damaged its core. WARNING: protein folding is cooperative — fixing one mutation in isolation may not improve the score (or may briefly make it worse). The structure 'snaps' into place once enough breakers are reverted. Score = Cα RMSD to wild-type HP35.",
+    "starting_sequence": "MLSDEDGKAVGGMTRSPFANLPLWPQQNPKKEKGLF",
+    "target_pdb_file": "puzzle2_hp35.pdb",
+    "mutation_budget": 8,
+    "baseline_rmsd": 9.82,
+    "expected_solved_rmsd": 1.5,
+    "hint": "Helices need contiguous helix-favoring residues. Look for Pro and Gly in helical regions.",
+    "difficulty": "hard"
+  },
+  "puzzle3": {
+    "id": "puzzle3",
+    "title": "Cage the Trp",
+    "description": "Trp-cage (PDB 1L2Y) is the smallest fast-folding miniprotein known, with a single tryptophan locked inside a polyproline cage. Three mutations have killed the hydrophobic core. Restore the cage.",
+    "starting_sequence": "NLYIQALKDGGASSGRPPAS",
+    "target_pdb_file": "puzzle3_trpcage.pdb",
+    "mutation_budget": 4,
+    "baseline_rmsd": 3.77,
+    "expected_solved_rmsd": 1.2,
+    "hint": "The tryptophan at position 6 (W) sits in the centre of the cage. The prolines at 12 and 19 hold the polyproline loop together.",
+    "difficulty": "easy"
+  },
+  "puzzle4": {
+    "id": "puzzle4",
+    "title": "Crack the Core",
+    "description": "HP35 (villin headpiece) again — but this time the breakers killed the hydrophobic core, not the helices. Phe and Trp swapped for charged residues. Restore the core so the bundle can pack.",
+    "starting_sequence": "MLSDEDEKAPFGMTRSAKANLPLEKQQNGKKEKGDF",
+    "target_pdb_file": "puzzle4_hp35_core.pdb",
+    "mutation_budget": 8,
+    "baseline_rmsd": 7.18,
+    "expected_solved_rmsd": 1.5,
+    "hint": "Charged residues (D, E, K) don't belong in a hydrophobic core. Trp (W) and Phe (F) are big aromatics that hold the core together. Helix-breaking Pro and Gly also need to go.",
+    "difficulty": "medium"
+  },
+  "puzzle5": {
+    "id": "puzzle5",
+    "title": "Three-helix Bundle",
+    "description": "A 56-residue 3-helix bundle DNA-binding motif (Engrailed homeodomain family). Five mutations have wrecked the inter-helix packing — hydrophobic core residues swapped for polar/charged ones. Restore the packing so the three helices can pack together.",
+    "starting_sequence": "EKRPRTADSSEQLARLKREENENRKLTERRRQQLSSELGLNEAQKPSRWEQNRRAK",
+    "target_pdb_file": "puzzle5_engrailed.pdb",
+    "mutation_budget": 7,
+    "baseline_rmsd": 14.71,
+    "expected_solved_rmsd": 2.0,
+    "hint": "Hydrophobic cores need hydrophobic residues. F (Phe), Y (Tyr), W (Trp), I (Ile), L (Leu), V (Val) are the usual core residues. Charged residues (D, E, K, R) don't belong in the centre.",
+    "difficulty": "medium"
+  },
+  "puzzle6": {
+    "id": "puzzle6",
+    "title": "Hairpin Lost",
+    "description": "The GB1 β-hairpin (PDB 2GB1 residues 41-56) is one of the smallest, fastest-folding β-sheet motifs known. Five core residues have been swapped for charge or helix-breakers and the hairpin has unwound. Restore the strand pairing.",
+    "starting_sequence": "GEKTDDDATKTKTPAE",
+    "target_pdb_file": "puzzle6_gb1.pdb",
+    "mutation_budget": 6,
+    "baseline_rmsd": 12.95,
+    "expected_solved_rmsd": 1.6,
+    "hint": "β-strands love branched/aromatic residues: V, I, T, W, Y, F. Charged residues (K, D, E) and the helix-breaker Pro don't pair into sheets. The DDA at positions 6-8 is the turn — leave it alone.",
+    "difficulty": "easy"
+  },
+  "puzzle7": {
+    "id": "puzzle7",
+    "title": "Zipper Down",
+    "description": "GCN4-p1 leucine zipper (yeast transcription factor coiled-coil). As a single chain ESMFold predicts a clean α-helix held together by buried Leucines at every 7th position. Six Leucines (4 core + 2 surface) have been swapped — some for the helix-breaker Pro, some for charged Glu — and the helix has unwound.",
+    "starting_sequence": "RMKQPEDKVEEEESKNYHEENEVARPKKEVGER",
+    "target_pdb_file": "puzzle7_gcn4.pdb",
+    "mutation_budget": 7,
+    "baseline_rmsd": 13.09,
+    "expected_solved_rmsd": 1.8,
+    "hint": "Coiled-coils pack their hydrophobic core every 7th residue (heptad-d). Buried Leucines were swapped for charged Glu or for the helix-breaker Pro. Find the L→E and L→P swaps and revert.",
+    "difficulty": "hard"
+  }
+}

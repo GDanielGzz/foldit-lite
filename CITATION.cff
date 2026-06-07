@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use this software in your work, please cite it as below."
+type: software
+title: "Foldit Lite — ESMFold-backed protein folding puzzle game"
+abstract: >-
+  A browser-based puzzle game where mutating residues triggers live
+  ESMFold structure re-prediction, scored as Cα-RMSD to a target
+  backbone. A background-warmed puzzle queue (asyncio-locked refills,
+  one slot per template × difficulty) hides ESMFold's 3–15 s inference
+  latency from the player. A three-check validator gates every generated
+  puzzle. Built to teach intuition for protein folding through interactive
+  play; not a research tool. ~3,250 LOC across FastAPI backend, React +
+  TypeScript frontend, and 3Dmol.js structure visualization.
+authors:
+  - family-names: "González Lozano"
+    given-names: "Daniel"
+    orcid: "https://orcid.org/0009-0002-1737-276X"
+    email: "1438751@gmail.com"
+    affiliation: "Tecnológico de Monterrey, Monterrey, Mexico"
+version: "v0.1-portfolio-snapshot"
+date-released: "[YYYY-MM-DD]"
+license: MIT
+url: "https://github.com/GDanielGzz/foldit-lite"
+repository-code: "https://github.com/GDanielGzz/foldit-lite"
+keywords:
+  - "protein folding"
+  - "ESMFold"
+  - "structural biology"
+  - "educational game"
+  - "FastAPI"
+  - "React"
+  - "3Dmol.js"
+  - "Anthropic API"
+  - "asyncio"
+  - "bioinformatics"
