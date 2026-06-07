@@ -18,9 +18,13 @@ generated puzzle. ~3,250 LOC across the stack.
 
 ## Try it
 
-[**Play Foldit Lite**]([DEPLOY_URL])
+Foldit Lite runs locally — the live ESMFold re-prediction needs a backend,
+so there's no hosted build. See [How to run locally](#how-to-run-locally)
+below (a two-terminal FastAPI + Vite setup).
 
-[**90-second video tour**]([VIDEO_URL])
+<!-- TODO: a short screen-capture GIF/video tour is the single highest-value
+     addition here. Record ~90 s of solving one puzzle, drop it in the repo
+     (or link an unlisted upload), and add it to this line. -->
 
 ## What's inside
 
