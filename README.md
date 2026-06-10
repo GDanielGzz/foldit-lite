@@ -1,20 +1,19 @@
 # Foldit Lite
 
-> Research-and-portfolio artifact. Code is well-tested for the cases it
-> was built against; not hardened for production. Conclusions about
-> protein structure inferred from the game's RMSD scores are bounded by
-> the caveats in [`LIMITATIONS.md`](LIMITATIONS.md). Issues and pull
-> requests welcomed.
+> Research code, not production. Tested for the cases it was built
+> against but not hardened for deployment. Conclusions about protein
+> structure inferred from the game's RMSD scores are bounded by the
+> caveats in [`LIMITATIONS.md`](LIMITATIONS.md). Issues and pull
+> requests welcome.
 
 A browser puzzle game where mutating residues triggers a live ESMFold
 structure re-prediction, scored as Cα-RMSD to a target backbone. Solve
 puzzles by evolving a sequence toward a target topology within a
 mutation budget.
 
-The portfolio thesis: a visual deliverable that demonstrates ESMFold
-integration, an async queue architecture that hides 3–15 s inference
-latency, and a three-check validator pipeline that gates every
-generated puzzle. ~3,250 LOC across the stack.
+It demonstrates ESMFold integration, an async queue architecture that
+hides 3–15 s inference latency, and a three-check validator pipeline
+that gates every generated puzzle. ~3,250 LOC across the stack.
 
 ## Try it
 
@@ -82,7 +81,7 @@ redesign/       Standalone visual-redesign prototypes (HTML + JSX) that
                 informed the current UI — kept as a design-rationale trail
 spike/          Day-1 ESMFold spike; preserved as the prototype that proved
                 the sequence-to-PDB pipeline worked before v1
-LIMITATIONS.md  Known limitations and caveats (READ THIS)
+LIMITATIONS.md  Known limitations and caveats
 CITATION.cff    Machine-readable citation metadata
 LICENSE         MIT
 ```
@@ -129,17 +128,4 @@ Marqusee α-helix template family from Marqusee, S. & Baldwin, R. L.
 peptides of de novo design.* PNAS, 84(24), 8898–8902.
 <https://doi.org/10.1073/pnas.84.24.8898>
 
-3Dmol.js for browser-side structure rendering. Anthropic API powers
-the optional LLM tutor card.
-
-## License
-
-MIT. See [`LICENSE`](LICENSE).
-
-## Contact
-
-Daniel González Lozano · `1438751@gmail.com` ·
-[ORCID](https://orcid.org/0009-0002-1737-276X)
-
-Postdoctoral researcher, Tecnológico de Monterrey × Technical University
-of Denmark.
+3Dm

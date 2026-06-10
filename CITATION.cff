@@ -15,10 +15,10 @@ authors:
   - family-names: "González Lozano"
     given-names: "Daniel"
     orcid: "https://orcid.org/0009-0002-1737-276X"
-    email: "1438751@gmail.com"
+    email: "sleepy.komodo@protonmail.com"
     affiliation: "Tecnológico de Monterrey, Monterrey, Mexico"
 version: "v0.1-portfolio-snapshot"
-date-released: "[YYYY-MM-DD]"
+date-released: "2026-06-07"
 license: MIT
 url: "https://github.com/GDanielGzz/foldit-lite"
 repository-code: "https://github.com/GDanielGzz/foldit-lite"
