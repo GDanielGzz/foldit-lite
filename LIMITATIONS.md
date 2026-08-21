@@ -5,7 +5,7 @@ Many of the model behaviors that would be "bugs" in a research setting
 are deliberate game-design choices here. This document marks where the
 two diverge.
 
-Last updated: 2026-05-23 (initial scaffolding by CodeNya)
+Last updated: 2026-05-23
 
 ---
 
