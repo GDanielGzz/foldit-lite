@@ -1,5 +1,7 @@
 # Foldit Lite
 
+[![CI](https://github.com/GDanielGzz/foldit-lite/actions/workflows/ci.yml/badge.svg)](https://github.com/GDanielGzz/foldit-lite/actions/workflows/ci.yml)
+
 > Research code, not production. Tested for the cases it was built
 > against but not hardened for deployment. Conclusions about protein
 > structure inferred from the game's RMSD scores are bounded by the
@@ -60,7 +62,7 @@ python -m venv .venv
 source .venv/bin/activate    # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 cp .env.example .env         # edit if you want the LLM tutor active
-uvicorn backend.main:app --reload --port 8000
+uvicorn backend.main:app --reload --port 8001   # Vite proxies API calls here
 
 # Frontend (in a second terminal)
 cd frontend
@@ -68,8 +70,33 @@ npm install
 npm run dev                  # opens http://localhost:5173
 ```
 
+On Windows, `frontend\dev.bat` is a shortcut for the same thing on a fixed
+port; elsewhere the equivalent is `npm run dev -- --port 5180 --strictPort`.
+
 If you don't set an Anthropic API key in `.env`, the LLM tutor card
 shows a static explanation and the rest of the game works normally.
+
+## Running the tests
+
+The backend has an offline pytest suite (ESMFold and the Anthropic API are
+stubbed, so no network or API key is needed):
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
+The frontend is checked with lint and a production build:
+
+```bash
+cd frontend
+npm ci
+npm run lint
+npm run build
+```
+
+CI runs both on pushes to `main` and on pull requests
+([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 
 ## Repo layout
 
@@ -81,6 +108,7 @@ redesign/       Standalone visual-redesign prototypes (HTML + JSX) that
                 informed the current UI — kept as a design-rationale trail
 spike/          Day-1 ESMFold spike; preserved as the prototype that proved
                 the sequence-to-PDB pipeline worked before v1
+tests/          Backend pytest suite (offline; ESMFold and LLM stubbed)
 LIMITATIONS.md  Known limitations and caveats
 CITATION.cff    Machine-readable citation metadata
 LICENSE         MIT
