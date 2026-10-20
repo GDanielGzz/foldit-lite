@@ -166,3 +166,24 @@ def test_queue_refill_failure_leaves_slot_empty():
     queue = PuzzleQueue(_targets(), broken, refill_max_attempts=1)
     asyncio.run(queue.refill_one("gcn4-coil", "easy"))
     assert queue.depth_map()["gcn4-coil"]["easy"] == 0
+
+
+def test_scheduled_refill_is_kept_alive_and_logs_crashes(caplog):
+    queue = PuzzleQueue(_targets(), lambda seq: ("", 0.0))
+
+    async def boom(template_id: str, difficulty: str) -> None:
+        await asyncio.sleep(0)
+        raise RuntimeError("lock exploded")
+
+    queue.refill_one = boom  # type: ignore[method-assign]
+
+    async def run() -> None:
+        task = queue.schedule_refill("marqusee", "easy")
+        assert task in queue._background_tasks  # strong ref while in flight
+        await asyncio.gather(task, return_exceptions=True)
+        await asyncio.sleep(0)  # let the done-callback run
+        assert not queue._background_tasks
+
+    with caplog.at_level("ERROR", logger="backend.services.puzzle_queue"):
+        asyncio.run(run())
+    assert "background refill crashed" in caplog.text
