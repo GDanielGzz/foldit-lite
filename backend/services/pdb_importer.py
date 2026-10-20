@@ -103,15 +103,22 @@ def _parse_fasta_for_chain(fasta_text: str, chain: str, pdb_id: str) -> tuple[st
 
 
 def _extract_auth_chains(header: str) -> list[str]:
-    """Parse auth chain letters from an RCSB FASTA header."""
-    m = re.search(r'\[auth\s+([^\]]+)\]', header)
-    if m:
-        return [c.strip() for c in m.group(1).split(",")]
-    # Fallback: 'Chain A' or 'Chains A,B' without [auth ...] annotation
-    m2 = re.search(r'Chains?\s+([A-Za-z0-9,\s]+?)(?:\||$)', header)
-    if m2:
-        return [c.strip() for c in m2.group(1).split(",") if c.strip()]
-    return []
+    """Parse auth chain letters from an RCSB FASTA header.
+
+    The chains field is a comma-separated list of label chains, each with
+    an optional ``[auth X]`` override, e.g. ``Chains A[auth B], C[auth D]``
+    -> ``['B', 'D']`` or ``Chains A, B`` -> ``['A', 'B']``.
+    """
+    m = re.search(r'Chains?\s+([^|]+)', header)
+    if not m:
+        return []
+    chains: list[str] = []
+    for entry in m.group(1).split(","):
+        auth = re.search(r'\[auth\s+([^\]]+)\]', entry)
+        chain = (auth.group(1) if auth else entry).strip()
+        if chain:
+            chains.append(chain)
+    return chains
 
 
 # ---------------------------------------------------------------------------
