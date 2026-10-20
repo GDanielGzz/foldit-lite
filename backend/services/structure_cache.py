@@ -9,6 +9,8 @@ identical sequences and can revisit.
 
 import logging
 import sqlite3
+from collections.abc import Iterator
+from contextlib import contextmanager
 from pathlib import Path
 
 log = logging.getLogger(__name__)
@@ -30,10 +32,17 @@ class StructureCache:
         with self._conn() as c:
             c.executescript(_SCHEMA)
 
-    def _conn(self) -> sqlite3.Connection:
+    @contextmanager
+    def _conn(self) -> Iterator[sqlite3.Connection]:
+        # sqlite3's own context manager only commits/rolls back; it never
+        # closes the connection. Close explicitly so connections don't leak.
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
-        return conn
+        try:
+            with conn:
+                yield conn
+        finally:
+            conn.close()
 
     def get(self, sequence: str) -> tuple[str, float | None] | None:
         with self._conn() as c:
