@@ -40,16 +40,8 @@ def test_generated_puzzle_respects_preset(tpl_id, difficulty):
     length, n_breaks, budget, solved_per_aa = tpl.difficulty_presets[difficulty]
     native = tpl.target_sequence_for_length(length)
 
-    # Some GB1-hard seeds can't place 5 non-adjacent breakers; the validated
-    # path just moves on to another seed, so do the same here.
-    for seed in range(50):
-        try:
-            p = generate_puzzle(tpl_id, difficulty, seed, _targets())
-            break
-        except ValueError:
-            continue
-    else:
-        pytest.fail("no seed produced a puzzle")
+    seed = 0
+    p = generate_puzzle(tpl_id, difficulty, seed, _targets())
 
     assert p.id == f"gen-{tpl_id}-{difficulty}-{seed}"
     assert len(p.starting_sequence) == length
@@ -87,6 +79,21 @@ def test_gb1_breakers_hit_core_and_spare_turn():
         assert not set(positions) & {5, 6, 7}
         assert set(positions) & {2, 4, 11, 13}
         assert all(p.starting_sequence[i] in "ALKE" for i in positions)
+
+
+def test_gb1_hard_every_seed_places_breakers_deterministically():
+    # Regression: a greedy placement used to strand ~17% of hard seeds
+    # (e.g. picking T3 blocks both W2 and Y4), so explicit seeds 400'd.
+    native = TEMPLATES["gb1-hairpin"].target_sequence_for_length(16)
+    targets = _targets()
+    for seed in range(500):
+        p = generate_puzzle("gb1-hairpin", "hard", seed, targets)
+        assert p == generate_puzzle("gb1-hairpin", "hard", seed, targets)
+        positions = _breakers(p, native)
+        assert len(positions) == 5
+        assert all(b - a >= 2 for a, b in zip(positions, positions[1:]))
+        assert not set(positions) & {5, 6, 7}
+        assert set(positions) & {2, 4, 11, 13}
 
 
 def test_gcn4_breakers_swap_core_leucines_for_glu():
