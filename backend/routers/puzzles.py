@@ -110,7 +110,7 @@ async def generate_puzzle(req: GenerateRequest, request: Request) -> PuzzleRespo
         queued = queue.try_pop(req.template, req.difficulty)
         if queued is not None:
             request.app.state.generated_puzzles[queued.id] = queued
-            asyncio.create_task(queue.refill_one(req.template, req.difficulty))
+            queue.schedule_refill(req.template, req.difficulty)
             try:
                 seed = int(queued.id.rsplit("-", 1)[1])
             except (ValueError, IndexError):
@@ -144,7 +144,7 @@ async def generate_puzzle(req: GenerateRequest, request: Request) -> PuzzleRespo
     request.app.state.generated_puzzles[puzzle.id] = puzzle
     # Schedule a background refill so the next request of the same kind hits the queue.
     if req.seed is None:
-        asyncio.create_task(queue.refill_one(req.template, req.difficulty))
+        queue.schedule_refill(req.template, req.difficulty)
     return _to_response(puzzle, generated=True, seed=seed)
 
 

@@ -3,6 +3,11 @@ import { StructureViewer } from './StructureViewer'
 import { IconRotate, IconCamera, IconMaximize, IconReset } from './Icons'
 import type { ColorMode } from './SequenceDock'
 
+// Fullscreen support is a property of the browser, not of this component's
+// lifecycle, so resolve it once instead of peeking at a ref during render
+// (which is still null on the first render and left the button disabled).
+const FULLSCREEN_SUPPORTED = typeof document !== 'undefined' && !!document.fullscreenEnabled
+
 interface ViewerStageProps {
   pdb: string | null
   colorMode: ColorMode
@@ -104,7 +109,7 @@ export function ViewerStage({
 
   const canRotate = !!pdb && !switching
   const canSnap   = !!pdb && !switching
-  const canFull   = !!viewerWrapRef.current
+  const canFull   = FULLSCREEN_SUPPORTED
 
   return (
     <section className="stage">

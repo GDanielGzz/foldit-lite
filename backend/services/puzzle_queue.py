@@ -15,8 +15,8 @@ Design:
   non-blocking so the server starts serving immediately even if the
   queue is empty.
 * :meth:`try_pop` is O(1) and never waits. The caller (the
-  ``/puzzles/generate`` route) immediately schedules a
-  :meth:`refill_one` to replace what it took.
+  ``/puzzles/generate`` route) immediately calls
+  :meth:`schedule_refill` to replace what it took.
 * Refills are serialized via an :class:`asyncio.Lock` so a busy server
   doesn't fire N concurrent ESMFold calls and starve foreground
   ``/predict`` traffic.
@@ -90,6 +90,9 @@ class PuzzleQueue:
         # Lazily created — must construct on the running event loop, not
         # at __init__ time (which may run before the loop exists).
         self._refill_lock: asyncio.Lock | None = None
+        # Strong refs to fire-and-forget refills: the event loop only holds
+        # weak references to tasks, so an unreferenced one can be GC'd mid-flight.
+        self._background_tasks: set[asyncio.Task[None]] = set()
         for tpl_id, tpl in TEMPLATES.items():
             for difficulty in tpl.difficulty_presets:
                 self.slots[(tpl_id, difficulty)] = deque(maxlen=capacity)
@@ -112,8 +115,8 @@ class PuzzleQueue:
     def try_pop(self, template_id: str, difficulty: str) -> Puzzle | None:
         """Return a pre-baked puzzle if one is ready; ``None`` otherwise.
 
-        The caller MUST follow up with :meth:`refill_one` (scheduled on
-        the event loop) so the slot gets replenished.
+        The caller MUST follow up with :meth:`schedule_refill` so the slot
+        gets replenished.
         """
         dq = self.slots.get((template_id, difficulty))
         if not dq:
@@ -172,6 +175,25 @@ class PuzzleQueue:
                 log.info(
                     "queue: refilled (%s, %s) → depth=%d", template_id, difficulty, len(dq),
                 )
+
+    def schedule_refill(self, template_id: str, difficulty: str) -> asyncio.Task[None]:
+        """Fire-and-forget :meth:`refill_one`, keeping the task alive until done.
+
+        Must be called from a running event loop. Any exception that escapes
+        the refill is logged rather than silently dropped with the task.
+        """
+        task = asyncio.create_task(self.refill_one(template_id, difficulty))
+        self._background_tasks.add(task)
+        task.add_done_callback(self._on_refill_done)
+        return task
+
+    def _on_refill_done(self, task: asyncio.Task[None]) -> None:
+        self._background_tasks.discard(task)
+        if task.cancelled():
+            return
+        exc = task.exception()
+        if exc is not None:
+            log.error("queue: background refill crashed", exc_info=exc)
 
     async def refill_all(self) -> None:
         """Top up every slot. Runs sequentially under the lock.

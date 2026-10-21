@@ -51,19 +51,25 @@ export async function listTemplates(signal?: AbortSignal): Promise<TemplateInfo[
 }
 
 export class ApiError extends Error {
-  constructor(message: string, public readonly status: number) {
+  readonly status: number
+
+  constructor(message: string, status: number) {
     super(message)
+    this.status = status
   }
 }
 
 async function unwrap<T>(resp: Response): Promise<T> {
   if (!resp.ok) {
+    // Read the body once: calling resp.text() after a failed resp.json()
+    // throws "body already used" instead of surfacing the server's message.
+    const text = await resp.text()
     let detail: string
     try {
-      const body = await resp.json()
+      const body = JSON.parse(text)
       detail = typeof body.detail === 'string' ? body.detail : JSON.stringify(body.detail)
     } catch {
-      detail = await resp.text()
+      detail = text
     }
     throw new ApiError(detail, resp.status)
   }

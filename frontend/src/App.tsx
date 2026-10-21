@@ -250,6 +250,15 @@ function App() {
     return () => ctrl.abort()
   }, [puzzle?.id, prediction, puzzles])
 
+  const reset = () => {
+    if (!puzzle) return
+    setSequence(puzzle.starting_sequence)
+    setMutationLog([])
+    setTutorExplanation(null)
+    setTutorTokens(null)
+    lastMutationRef.current = null
+  }
+
   // ----- Keyboard shortcuts -----
   // R   reset to starting sequence
   // N   advance to next static puzzle in the catalog
@@ -323,15 +332,6 @@ function App() {
       ...log,
       { pos: position, prev: prevAA, next: newAA, rmsdBefore: prediction.score?.rmsd ?? 0 },
     ])
-  }
-
-  const reset = () => {
-    if (!puzzle) return
-    setSequence(puzzle.starting_sequence)
-    setMutationLog([])
-    setTutorExplanation(null)
-    setTutorTokens(null)
-    lastMutationRef.current = null
   }
 
   const askTutor = async () => {

@@ -69,6 +69,9 @@ export function OnboardingTour({ onDone }: OnboardingTourProps) {
     }
   }, [step, s.anchor])
 
+  const next = () => (step >= STEPS.length - 1 ? onDone() : setStep((n) => n + 1))
+  const back = () => setStep((n) => Math.max(0, n - 1))
+
   // Keyboard navigation.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -82,11 +85,8 @@ export function OnboardingTour({ onDone }: OnboardingTourProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step])
 
-  const next = () => (step >= STEPS.length - 1 ? onDone() : setStep((n) => n + 1))
-  const back = () => setStep((n) => Math.max(0, n - 1))
-
   // Position the tooltip.
-  let tipStyle: CSSProperties = {}
+  let tipStyle: CSSProperties
   if (s.kind === 'center' || !rect) {
     tipStyle = { left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }
   } else {

@@ -22,6 +22,7 @@ it without further changes.
 """
 
 from dataclasses import dataclass
+from itertools import combinations
 import random
 from typing import Callable, Iterable
 
@@ -182,34 +183,31 @@ def _gb1_hairpin_break_positions(target_seq: str, k: int, rng: random.Random) ->
     Picks at least one core hydrophobic position (W/Y/F/V) so the broken
     starter actually unfolds — sweeping the threonines alone leaves the
     hairpin near-intact, which the validator rejects as trivial.
+
+    The eligible pool is tiny (9 strand positions), so we enumerate every
+    valid placement and let the rng choose one. A greedy random walk can
+    paint itself into a corner (e.g. picking T3 blocks both W2 and Y4),
+    which made ~17% of explicit hard seeds unplaceable.
     """
     eligible = [
         i for i, aa in enumerate(target_seq)
         if i not in _GB1_TURN_POSITIONS and aa in _GB1_STRAND_BREAKABLE_AAS
     ]
-    core = [i for i in eligible if i in _GB1_CORE_POSITIONS]
-    if not core:
+    if not any(i in _GB1_CORE_POSITIONS for i in eligible):
         raise ValueError("GB1 hairpin: no core positions available (bad template definition)")
 
-    def _can_place(chosen: list[int], pos: int) -> bool:
-        return all(abs(pos - c) >= 2 for c in chosen)
-
-    rng.shuffle(core)
-    rng.shuffle(eligible)
-    # Seed with one core position so we guarantee real disruption.
-    chosen: list[int] = [core[0]]
-    pool = [p for p in eligible if p != chosen[0]]
-    rng.shuffle(pool)
-    for pos in pool:
-        if _can_place(chosen, pos):
-            chosen.append(pos)
-            if len(chosen) == k:
-                return sorted(chosen)
-    raise ValueError(
-        f"Could not place {k} non-adjacent breakers in GB1 hairpin "
-        f"(only {len(eligible)} eligible strand positions available, "
-        f"non-adjacency cap is the bottleneck)"
-    )
+    placements = [
+        list(combo) for combo in combinations(eligible, k)
+        if all(b - a >= 2 for a, b in zip(combo, combo[1:]))
+        and any(i in _GB1_CORE_POSITIONS for i in combo)
+    ]
+    if not placements:
+        raise ValueError(
+            f"Could not place {k} non-adjacent breakers in GB1 hairpin "
+            f"(only {len(eligible)} eligible strand positions available, "
+            f"non-adjacency cap is the bottleneck)"
+        )
+    return rng.choice(placements)
 
 
 def _gb1_hairpin_substitute(target_seq: str, pos: int, rng: random.Random) -> str:
